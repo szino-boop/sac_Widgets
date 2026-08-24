@@ -1,0 +1,82 @@
+{
+  "id": "rtl-table-widget",
+  "version": "1.0.0",
+  "name": "RTL Table Widget",
+  "description": "Custom table widget with native right-to-left support for Hebrew and Arabic",
+  "icon": "table",
+  "vendor": "Internal",
+  "eula": "",
+  "license": "",
+  "newInstancePrefix": "RtlTable",
+  "webcomponents": [
+    {
+      "kind": "main",
+      "tag": "rtl-table-widget",
+      "url": "https://YOUR_HOST/rtl-table-widget/main.js",
+      "integrity": ""
+    }
+  ],
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "Title shown above the table",
+      "default": "טבלה"
+    },
+    "textDirection": {
+      "type": "string",
+      "description": "Text direction: rtl or ltr",
+      "default": "rtl"
+    },
+    "showStatusBadges": {
+      "type": "boolean",
+      "description": "Show colored status pills in the status column",
+      "default": true
+    },
+    "enableSelection": {
+      "type": "boolean",
+      "description": "Allow selecting rows via checkbox",
+      "default": true
+    },
+    "enableSearch": {
+      "type": "boolean",
+      "description": "Show the search box above the table",
+      "default": true
+    }
+  },
+  "methods": {
+    "getSelectedKeys": {
+      "description": "Returns an array of currently selected row keys",
+      "returnType": "any"
+    },
+    "clearSelection": {
+      "description": "Clears all row selections"
+    },
+    "refresh": {
+      "description": "Forces the widget to re-render from the current data binding"
+    }
+  },
+  "events": {
+    "onRowSelect": {
+      "description": "Fired when the set of selected rows changes"
+    },
+    "onSort": {
+      "description": "Fired when the user sorts by a column"
+    }
+  },
+  "dataBindings": {
+    "myDataBinding": {
+      "feeds": [
+        {
+          "id": "dimensions",
+          "description": "Dimensions",
+          "type": "dimension"
+        },
+        {
+          "id": "measures",
+          "description": "Measures",
+          "type": "mainStructureMember"
+        }
+      ]
+    }
+  }
+}
