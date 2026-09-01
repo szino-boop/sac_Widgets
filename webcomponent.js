@@ -1,4 +1,4 @@
-(function () {
+(function () { 
   // Template for the widget's shadow DOM
   const template = document.createElement('template');
   template.innerHTML = `
