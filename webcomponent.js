@@ -77,7 +77,7 @@
       this._button.addEventListener('click', () => this._requestInsight());
     }
 
-    // ---- SAC property setters ----
+    // ---- SAC property & Data Binding handlers ----
     onCustomWidgetBeforeUpdate(changedProps) {
       if ('middlewareUrl' in changedProps) {
         this._middlewareUrl = changedProps.middlewareUrl;
@@ -88,7 +88,18 @@
     }
 
     onCustomWidgetAfterUpdate(changedProps) {
-      this._labelEl.textContent = this._contextLabel || '';
+      if (this._labelEl) {
+        this._labelEl.textContent = this._contextLabel || '';
+      }
+
+      // טיפול בקבלת נתונים אוטומטית מתוך המודל ב-SAC (Data Binding)
+      if ('myDataBinding' in changedProps) {
+        const dataBinding = changedProps['myDataBinding'];
+        if (dataBinding && dataBinding.state === 'success' && dataBinding.data) {
+          // שמירת הנתונים שהתקבלו ישירות מהמודל
+          this._dataJson = JSON.stringify(dataBinding.data);
+        }
+      }
     }
 
     // ---- Script API methods exposed to SAC ----
@@ -103,6 +114,7 @@
       }
     }
 
+    // מתודת גיבוי במידה ועדיין רוצים להעביר נתונים ידנית דרך סקריפט
     setData(dataJson) {
       this._dataJson = dataJson;
     }
@@ -120,6 +132,14 @@
       this._button.textContent = 'טוען תובנה...';
 
       try {
+        // המרת הנתונים לאובייקט במידה וקיימים
+        let parsedData = null;
+        if (typeof this._dataJson === 'string') {
+          parsedData = JSON.parse(this._dataJson);
+        } else if (typeof this._dataJson === 'object') {
+          parsedData = this._dataJson;
+        }
+
         const response = await fetch(this._middlewareUrl, {
           method: 'POST',
           headers: {
@@ -127,7 +147,7 @@
           },
           body: JSON.stringify({
             context: this._contextLabel,
-            data: this._dataJson ? JSON.parse(this._dataJson) : null
+            data: parsedData
           })
         });
 
