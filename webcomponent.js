@@ -65,7 +65,6 @@
       super();
       this._shadowRoot = this.attachShadow({ mode: 'open' });
       this._shadowRoot.appendChild(template.content.cloneNode(true));
-
       this._middlewareUrl = '';
       this._contextLabel = '';
       this._dataJson = null;
@@ -78,7 +77,7 @@
       this._button.addEventListener('click', () => this._requestInsight());
     }
 
-    // ---- SAC property setters (called automatically by SAC based on manifest "properties") ----
+    // ---- SAC property setters ----
     onCustomWidgetBeforeUpdate(changedProps) {
       if ('middlewareUrl' in changedProps) {
         this._middlewareUrl = changedProps.middlewareUrl;
@@ -92,7 +91,18 @@
       this._labelEl.textContent = this._contextLabel || '';
     }
 
-    // ---- Script API method exposed to SAC scripting (manifest "methods.setData") ----
+    // ---- Script API methods exposed to SAC ----
+    setMiddlewareUrl(url) {
+      this._middlewareUrl = url;
+    }
+
+    setContextLabel(label) {
+      this._contextLabel = label;
+      if (this._labelEl) {
+        this._labelEl.textContent = label;
+      }
+    }
+
     setData(dataJson) {
       this._dataJson = dataJson;
     }
@@ -115,7 +125,6 @@
           headers: {
             'Content-Type': 'application/json'
           },
-          // Never send an API key from here - the middleware holds it server-side.
           body: JSON.stringify({
             context: this._contextLabel,
             data: this._dataJson ? JSON.parse(this._dataJson) : null
